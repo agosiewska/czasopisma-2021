@@ -69,19 +69,43 @@ ggplot(plot_dat, aes(x = stary, y = nowy, fill = n, label = n)) +
   facet_wrap(~ dyscyplina)
 dev.off()
 
+change_plot_dat <- mutate(plot_dat, 
+                          change = paste0(stary, "->", nowy),
+                          change_type = ifelse(as.numeric(stary) < as.numeric(nowy), "wzrost",
+                                               ifelse(as.numeric(stary) > as.numeric(nowy), "spadek",
+                                                      "tak samo")),
+                          change_type = ifelse(stary == "brak", "nowe czasopismo", change_type),
+                          change_type = ifelse(nowy == "brak", "usunięte czasopismo", change_type))
+
+
 cairo_pdf("plot2.pdf", height = 32, width = 32)
-plot_dat %>% 
-  mutate(change = paste0(stary, "->", nowy),
-         change_positive = as.numeric(nowy) >= as.numeric(stary)) %>% 
-  group_by(dyscyplina, change, change_positive) %>% 
+group_by(change_plot_dat, dyscyplina, change, change_type) %>% 
   summarise(n = sum(n)) %>% 
   ungroup() %>% 
   group_by(dyscyplina) %>% 
   mutate(frac = n/sum(n)) %>% 
-  ggplot(aes(x = change, y = frac, fill = change_positive)) +
+  ggplot(aes(x = change, y = frac, fill = change_type)) +
   geom_col() +
   facet_wrap(~dyscyplina) +
   coord_flip()
 dev.off()
 
 
+png("plot3.png", height = 480*4, width = 480*4, res = 200)
+change_plot_dat %>% 
+  group_by(dyscyplina, change_type) %>% 
+  summarise(n = sum(n)) %>% 
+  mutate(frac = n/sum(n)) %>% 
+  filter(change_type == "wzrost") %>% 
+  arrange(frac) %>% 
+  mutate(dyscyplina = factor(dyscyplina, levels = .[["dyscyplina"]]),
+         teol = dyscyplina %in% c("prawo kanoniczne", "nauki teologiczne")) %>% 
+  ggplot(aes(x = dyscyplina, y = frac, fill = teol)) +
+  geom_col() +
+  scale_fill_manual("Związane z teologią", values = rev(c("black", "grey"))) +
+  scale_x_discrete("Dyscyplina") +
+  scale_y_continuous("Frakcja czasopism ze wzrostem punktów", expand = c(0, 0)) +
+  coord_flip() +
+  theme_bw() +
+  theme(legend.position = "bottom")
+dev.off()
