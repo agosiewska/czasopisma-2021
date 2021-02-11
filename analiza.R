@@ -4,7 +4,7 @@ library(ggplot2)
 library(tidyr)
 
 
-wykaz_stary <- read.csv2("wykaz_stary.csv")
+wykaz_stary <- read.csv2("wykaz_stary.csv", encoding = "UTF-8", stringsAsFactors = FALSE)
 colnames(wykaz_stary)[1:8] <- wykaz_stary[3,1:8]
 colnames(wykaz_stary)[9:ncol(wykaz_stary)] <- wykaz_stary[2,9:ncol(wykaz_stary)]
 wykaz_stary <- wykaz_stary[4:nrow(wykaz_stary),]
@@ -22,7 +22,7 @@ clean_colnames <- function(x) {
 wykaz_stary <- clean_colnames(wykaz_stary)
 
 
-wykaz_nowy <- read.csv2("wykaz_nowy.csv")
+wykaz_nowy <- read.csv2("wykaz_nowy.csv", encoding = "UTF-8", stringsAsFactors = FALSE)
 colnames(wykaz_nowy)[1:9] <- wykaz_nowy[1,1:9]
 wykaz_nowy <- wykaz_nowy[2:nrow(wykaz_nowy),]
 wykaz_nowy <- clean_colnames(wykaz_nowy)
@@ -109,3 +109,23 @@ change_plot_dat %>%
   theme_bw() +
   theme(legend.position = "bottom")
 dev.off()
+
+
+
+
+
+plot_dat <- plot_dat[plot_dat[["stary"]] != "brak", ]
+plot_dat <- plot_dat[plot_dat[["nowy"]] != "brak", ]
+plot_dat[["roznica"]] <- as.numeric(as.character(plot_dat[["nowy"]])) - as.numeric(as.character(plot_dat[["stary"]]))
+mean(plot_dat[["roznica"]])
+
+tmp <- plot_dat %>%
+  select(dyscyplina, roznica, n) %>%
+  group_by(dyscyplina) %>%
+  summarise(mean = weighted.mean(roznica, n)) %>%
+  arrange(mean) %>%
+  mutate(dyscyplina = factor(dyscyplina, levels = .[["dyscyplina"]]))
+ggplot(tmp, aes(x = dyscyplina, y = mean)) +
+  geom_col() + theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  ggtitle("Zmiana średniej punktacji czasopism, znajdujących się w nowym i poprzednim wykazie")
