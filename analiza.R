@@ -43,6 +43,8 @@ dyscypliny_all <- lapply(dyscypliny, function(dyscyplina){
 }) 
 
 
+lapply(dyscypliny_all, function(i) is.na(i[["Punkty"]]))
+
 dyscypliny_all[dyscypliny_all[["Tytuł 1"]] == "Journal of Veterinary Research", ]
 
 tmp <- pivot_wider(dyscypliny_all, names_from = wykaz, values_from = Punkty,
