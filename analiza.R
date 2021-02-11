@@ -22,7 +22,6 @@ colnames(wykaz_nowy)[6:ncol(wykaz_nowy)] <- colnames(wykaz_stary)[6:ncol(wykaz_s
 dyscypliny <- colnames(wykaz_stary)[6:ncol(wykaz_stary)]
 
 dyscypliny_all <- lapply(dyscypliny, function(dyscyplina){
-  browser()
   # dyscyplina <- "informatyka techniczna i telekomunikacja"
   # dyscyplina <- "nauki biologiczne"
   # dyscyplina <- "nauki teologiczne"
