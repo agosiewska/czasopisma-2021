@@ -1,6 +1,7 @@
 library(readxl)
 library(dplyr)
 library(ggplot2)
+library(tidyr)
 
 
 wykaz_stary <- read_excel("wykaz_stary.xlsx")
@@ -37,13 +38,24 @@ dyscypliny_all <- lapply(dyscypliny, function(dyscyplina){
            Punkty = as.numeric(Punkty),
            dyscyplina = dyscyplina)
   
-  
-  dyscyplina_all <- rbind(dyscyplina_stary, dyscyplina_nowy)
-  dyscyplina_all[["wykaz"]] <- factor(dyscyplina_all[["wykaz"]], levels = c("stary", "nowy"))
-  
-  dyscyplina_all
-}) %>%
-  bind_rows()
+  rbind(dyscyplina_stary, dyscyplina_nowy) %>% 
+    mutate(wykaz = factor(wykaz, levels = c("stary", "nowy")))  
+}) 
+
+
+dyscypliny_all[dyscypliny_all[["Tytuł 1"]] == "Journal of Veterinary Research", ]
+
+tmp <- pivot_wider(dyscypliny_all, names_from = wykaz, values_from = Punkty,
+            values_fill = NA) %>% 
+  mutate(stary = unlist(stary))
+
+tmp[lengths(tmp[["stary"]]) == 2, ] %>% View
+
+
+  # mutate(stary = as.numeric(stary), nowy = as.numeric(nowy)) %>% 
+  # group_by(dyscyplina, stary, nowy) %>% 
+  # summarise(n = length(nowy))
+
 
 
 
