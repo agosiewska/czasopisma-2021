@@ -95,8 +95,8 @@ change_plot_dat %>%
   mutate(dyscyplina = factor(dyscyplina, levels = .[["dyscyplina"]]),
          teol = dyscyplina %in% c("prawo kanoniczne", "nauki teologiczne")) %>% 
   ggplot(aes(x = dyscyplina, y = frac, fill = teol)) +
-  geom_col() +
-  scale_fill_manual("Związane z teologią", values = rev(c("black", "grey"))) +
+  geom_col(fill="grey") +
+  # scale_fill_manual("Związane z teologią", values = rev(c("black", "grey"))) +
   scale_x_discrete("Dyscyplina") +
   scale_y_continuous("Frakcja czasopism ze wzrostem punktów", expand = c(0, 0)) +
   coord_flip() +
