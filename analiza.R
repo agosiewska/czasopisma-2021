@@ -78,17 +78,7 @@ change_plot_dat <- mutate(plot_dat,
                           change_type = ifelse(nowy == "brak", "usunięte czasopismo", change_type))
 
 
-cairo_pdf("plot2.pdf", height = 32, width = 32)
-group_by(change_plot_dat, dyscyplina, change, change_type) %>% 
-  summarise(n = sum(n)) %>% 
-  ungroup() %>% 
-  group_by(dyscyplina) %>% 
-  mutate(frac = n/sum(n)) %>% 
-  ggplot(aes(x = change, y = frac, fill = change_type)) +
-  geom_col() +
-  facet_wrap(~dyscyplina) +
-  coord_flip()
-dev.off()
+
 
 
 png("plot3.png", height = 480*4, width = 480*4, res = 200)
@@ -111,8 +101,22 @@ change_plot_dat %>%
 dev.off()
 
 
+##### INNE próby wizualizacji
+
+cairo_pdf("plot2.pdf", height = 32, width = 32)
+group_by(change_plot_dat, dyscyplina, change, change_type) %>% 
+  summarise(n = sum(n)) %>% 
+  ungroup() %>% 
+  group_by(dyscyplina) %>% 
+  mutate(frac = n/sum(n)) %>% 
+  ggplot(aes(x = change, y = frac, fill = change_type)) +
+  geom_col() +
+  facet_wrap(~dyscyplina) +
+  coord_flip()
+dev.off()
 
 
+#### Próba odtworzenia wykresu ze srednimi
 
 plot_dat <- plot_dat[plot_dat[["stary"]] != "brak", ]
 plot_dat <- plot_dat[plot_dat[["nowy"]] != "brak", ]
