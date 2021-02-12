@@ -4,10 +4,14 @@ library(ggplot2)
 library(tidyr)
 
 
-wykaz_stary <- read.csv2("wykaz_stary.csv", encoding = "UTF-8", stringsAsFactors = FALSE)
-colnames(wykaz_stary)[1:8] <- wykaz_stary[3,1:8]
-colnames(wykaz_stary)[9:ncol(wykaz_stary)] <- wykaz_stary[2,9:ncol(wykaz_stary)]
-wykaz_stary <- wykaz_stary[4:nrow(wykaz_stary),]
+# wykaz_stary <- read.csv2("wykaz_stary.csv", encoding = "UTF-8", stringsAsFactors = FALSE)
+# colnames(wykaz_stary)[1:8] <- wykaz_stary[3,1:8]
+# colnames(wykaz_stary)[9:ncol(wykaz_stary)] <- wykaz_stary[2,9:ncol(wykaz_stary)]
+# wykaz_stary <- wykaz_stary[4:nrow(wykaz_stary),]
+
+wykaz_stary <- read.csv2("wykaz_stary_grudzien.csv", encoding = "UTF-8", stringsAsFactors = FALSE)
+colnames(wykaz_stary)[1:9] <- wykaz_stary[1,1:9]
+wykaz_stary <- wykaz_stary[2:nrow(wykaz_stary),]
 
 clean_colnames <- function(x) {
   colnames(x)[colnames(x) == "issn"] <- 
